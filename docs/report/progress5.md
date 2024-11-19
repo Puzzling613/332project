@@ -4,7 +4,7 @@
 각자 서로의 디자인에 대해 얘기를 나누고 피드백하는 시간을 가짐  
 
 예상되는 난관:
-sampling에서 너무 skew되어서  worker에서 넘치면 큰일임 -> stratified sampling 할 것이기도 하고그럴 일은 거의 없을 것 같은데 염두에 둠
+sampling에서 너무 skew되어서  worker에서 넘치면 큰일임 -> stratified sampling 할 것이기도 하고그럴 일은 거의 없을 것 같은데 염두에 둠  
 동시성 문제 promise and future로 해결하기
 
 홍지우 - sampling/partition 알고리즘 설정 및 의사 코드 구현  
