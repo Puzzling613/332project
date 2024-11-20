@@ -30,7 +30,7 @@ def workerSample(data, p, workerCount)
     samples <- []
     for i <- 0 to p * len(data)
         # interval = (key.max - key.min) / (p * len(data))
-        samples.append(data[data.key.min() + i * (data.keys.max() - data.keys.min()) / (p * len(data))].key)
+        samples.append(data[i * (data.keys.max() - data.keys.min()) / (p * len(data))].key)
     return samples
 ```
 

@@ -19,7 +19,7 @@ def sampleData(data: Seq[KeyValue], p: Double, workerCount: Int): Seq[Int] = {
 
   // Sampling logic
   for (i <- 0 until sampleCount) {
-    val sampleKey = minKey + (i * interval).toInt
+    val sampleKey = (i * interval).toInt
     samples.append(sampleKey)
   }
 
