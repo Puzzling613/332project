@@ -245,7 +245,8 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   private def sortPhase(): Unit = {
-    //*TODO* Implement Sorting
+    //Implement Sorting
+    inputDir.sortBy(_.key)
   }
 
   private def notifySortComplete(): Unit = {
