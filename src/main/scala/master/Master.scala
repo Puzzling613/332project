@@ -31,7 +31,7 @@ class MasterServer(port: Int, numWorkers: Int) extends LazyLogging {
   def start(): Unit = {
     server = ServerBuilder
       .forPort(port)
-      .addService(SortingServiceGrpc.bindService(service, ExecutionContext.global))
+      .addService(MasterService.bindService(service, ExecutionContext.global))
       .build()
       .start()
     logger.info(s"Master server started on port $port ^_^")
@@ -51,13 +51,13 @@ class MasterServer(port: Int, numWorkers: Int) extends LazyLogging {
   }
 }
 
-class MasterService(numWorkers: Int) extends SortingServiceGrpc.SortingService with LazyLogging {
-  private val workers = TrieMap[Int, String]() // Worker ID -> IP
+class MasterService(numWorkers: Int) with LazyLogging {
+  private val workers = TrieMap[Int, String]()
   private val workerIdCounter = new AtomicInteger(0)
   private var shuffleCompletedWorkers = Set.empty[Int]
   private var mergeCompletedWorkers = Set.empty[Int]
-  private var samples = List.empty[Seq[KeyValue]] // 샘플 데이터 저장
-  private var partitionBoundaries = Seq.empty[String] // 파티션 경계 저장
+  private var samples = List.empty[Seq[KeyValue]]
+  private var partitionBoundaries = Seq.empty[String]
 
   override def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
     val workerId = workerIdCounter.incrementAndGet()

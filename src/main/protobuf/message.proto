@@ -13,6 +13,7 @@ service Master {
 service Worker {
   rpc StartShuffle(ShuffleRequest) returns (ShuffleReply);
   rpc StartSort(SortRequest) returns (SortReply);
+  rpc SendPartitionData(PartitionDataRequest) returns (PartitionDataReply);
 }
 
 message RegisterWorkerRequest {
@@ -73,4 +74,14 @@ message GetDataRequest {}
 
 message GetDataResponse {
   repeated PartitionBoundaries partitionBoundaries = 1;
+}
+
+message PartitionDataRequest {
+  int32 senderWorkerId = 1;
+  string partitionBoundaries = 2;
+  bytes data = 3;
+}
+
+message PartitionDataReply {
+  bool success = 1;
 }
