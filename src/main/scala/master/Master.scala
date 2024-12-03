@@ -72,7 +72,7 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
-  override def PickBoundariesComplete(request: WorkerDataRequest): Future[WorkerDataReply] = {
+  override def PickBoundariesComplete(request: GetDataRequest): Future[WorkerDataReply] = {
     samples :+= request.sample
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 
@@ -87,7 +87,7 @@ class MasterService(numWorkers: Int) with LazyLogging {
       }
     }
 
-    Future.successful(WorkerDataReply(partitionBoundaries = partitionBoundaries))
+    Future.successful(GetDataResponse(partitionBoundaries = partitionBoundaries))
   }
 
   override def shuffleStart(request: ShuffleRequest): Future[ShuffleReply] = {
