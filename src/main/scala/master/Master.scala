@@ -11,8 +11,8 @@ import black.message._
 case class KeyValue(key: String, value: String)
 
 trait Hyperparams {
-  val _workerCount = Nil
-  val _samplingRate = 0.05
+  val _workerCount: Int = Nil
+  val _samplingRate: Double = 0.05
 }
 
 object MasterApp extends App with LazyLogging with Hyperparams {
@@ -72,22 +72,22 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
-  override def PickBoundariesComplete(request: WorkerDataRequest): Future[WorkerDataReply] = {
+  override def PickBoundariesComplete(request: GetDataRequest): Future[WorkerDataReply] = {
     samples :+= request.sample
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 
     if (samples.size == numWorkers) {
-      val sortedSamples = samples.flatten.sorted
-      val partitionSize = sortedSamples.length / numWorkers
+      val sortedSamples: List[KeyValue] = samples.flatten.sorted
+      val partitionSize: Int = sortedSamples.length / numWorkers
       // pick numWorkers-1 boundaries
-      partitionBoundaries = (1 until numWorkers).map(i => sortedSamples(i * partitionSize))
+      partitionBoundaries: Seq[String] = (1 until numWorkers).map(i => sortedSamples(i * partitionSize))
       logger.info(s"Partition boundaries calculated: $partitionBoundaries")
       workers.keys.foreach { workerId =>
         logger.info(s"Sending partition boundaries to Worker ID: $workerId")
       }
     }
 
-    Future.successful(WorkerDataReply(partitionBoundaries = partitionBoundaries))
+    Future.successful(GetDataResponse(partitionBoundaries = partitionBoundaries))
   }
 
   override def shuffleStart(request: ShuffleRequest): Future[ShuffleReply] = {
