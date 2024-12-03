@@ -19,7 +19,15 @@ object WorkerApp extends App with LazyLogging {
   }
 
   val masterAddress = args(0)
-  val inputDir = args(args.indexOf("-I") + 1)
+  val input = args(args.indexOf("-I") + 1)
+  // 문자열을 100글자 단위로 분할
+  val chunks: Iterator[String] = input.grouped(100)
+  // 각 조각을 KeyValue 객체로 매핑하여 시퀀스로 변환
+  val inputDir: Seq[KeyValue] = chunks.map { chunk =>
+    val key = if (chunk.length >= 10) chunk.substring(0, 10) else chunk
+    val value = if (chunk.length > 10) chunk.substring(10) else ""
+    KeyValue(key, value)
+  }.toSeq
   val outputDir = args(args.indexOf("-O") + 1)
   val workerIp = java.net.InetAddress.getLocalHost.getHostAddress
 
@@ -75,7 +83,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)
 
   private var workerId: Option[Int] = None
-  private var sendBuffers: Map[Int, List[Data]] = Map()
+  private var sendBuffers: Map[Int, Seq[KeyValue]] = Map()
   private var localData: List[Data] = List()
 
   private def registerWithMaster(): Unit = {
@@ -114,9 +122,30 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
 
 
   def shufflePhase(): Unit = {
-    //*TODO* Implement shuffling
+    val localKeyValue: Seq[KeyValue] = inputDir
+    val partitionBoundaries: Seq[String] = ???
+    // partition boundary에 따라 대상 노드를 결정
+    def findTargetNode(key: String): String = {
+      partitionBoundaries.indexWhere(pk => key < pk) match {
+        case -1 => partitionBoundaries.length.toString // 마지막 노드의 ID로 설정
+        case idx => idx.toString // 해당 노드의 ID로 설정
+      }
+    }
+
+    // 데이터 분할: 로컬 데이터를 partitioning boundary에 따라 분할
+    def partitionKeyValue(): Seq[KeyValue] = {
+      for (kv <- localKeyValue) {
+        val targetNode = findTargetNode(kv.key)
+        if (targetNode != id) {
+          // 해당 노드로 보낼 버퍼에 KeyValue 추가
+          sendBuffers = sendBuffers.updated(targetNode, sendBuffers(targetNode) :+ kv)
+        }
+      }
+      // 현재 노드에 남겨야 할 KeyValue들만 필터링하여 반환
+      localKeyValue.filter(kv => findTargetNode(kv.key) == id)
+    }
     sendBuffers.foreach { case (targetNode, dataList) =>
-      sendPartitionData(targetNode, dataList)
+      sendPartitionData(targetNode, dataList) //worker 간 통신
     }
     //*TODO* Shuffling Complete Log
   }
