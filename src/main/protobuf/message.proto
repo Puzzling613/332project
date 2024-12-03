@@ -1,0 +1,115 @@
+//syntax = "proto3";
+//package black.message;
+//
+//service Master {
+//  rpc registerWorker (RegisterWorkerRequest) returns (RegisterWorkerReply);
+//  rpc merge (MergeRequest) returns (MergeReply);
+//}
+//
+//service Worker {
+//  rpc shufflingTask (ShufflingTaskRequest) returns (ShufflingTaskReply);
+//  rpc sortTask (SortTaskRequest) returns (SortTaskReply);
+//}
+//
+//message RegisterWorkerRequest {
+//  string ip = 1;
+//}
+//
+//message RegisterWorkerReply {
+//  string ip = 1;
+//}
+//
+//message ShufflingTaskRequest {
+//  repeated string ranges = 1;
+//}
+//
+//message ShufflingTaskReply {
+//  string rep = 1;
+//}
+//
+//message SortTaskRequest {
+//  string output = 1;
+//}
+//
+//message SortTaskReply {
+//  string output = 1;
+//}
+//
+//message MergeRequest {
+//  repeated string sorted = 1;
+//}
+//
+//message MergeReply {
+//  repeated string sorted = 1;
+//}
+
+syntax = "proto3";
+
+package black.message;
+
+// Register Worker
+message RegisterWorkerRequest {
+  string ip = 1;
+}
+
+message RegisterWorkerReply {
+  int32 workerId = 1;
+}
+
+// Shuffle
+message ShuffleRequest {
+  string ip = 1;
+  repeated string records = 2;
+}
+
+message ShuffleReply {
+  bool success = 1;
+}
+
+// Shuffle Complete
+message ShuffleCompleteRequest {
+  int32 workerId = 1;
+}
+
+message ShuffleCompleteReply {
+  bool success = 1;
+}
+
+// Sort
+message SortRequest {
+  string ip = 1;
+}
+
+message SortReply {
+  bool success = 1;
+}
+
+// Sort Complete
+message MergeSortCompleteRequest {
+  int32 workerId = 1;
+}
+
+message MergeSortCompleteReply {
+  bool success = 1;
+}
+
+// Get Key Ranges
+message GetDataRequest {}
+
+message GetDataResponse {
+  repeated string keyRanges = 1;
+}
+
+// Master Service
+service Master {
+  rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);
+  rpc ShuffleComplete(ShuffleCompleteRequest) returns (ShuffleCompleteReply);
+  rpc MergeSortComplete(MergeSortCompleteRequest) returns (MergeSortCompleteReply);
+  rpc GetWorkerData(GetDataRequest) returns (GetDataResponse);
+}
+
+// Worker Service
+service Worker {
+  rpc StartShuffle(ShuffleRequest) returns (ShuffleReply);
+  rpc StartSort(SortRequest) returns (SortReply);
+}
