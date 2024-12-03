@@ -10,12 +10,15 @@ import black.message._
 
 case class KeyValue(key: String, value: String)
 
-object MasterApp extends App with LazyLogging {
+trait Hyperparams {
+  val _workerCount = Nil
+}
+
+object MasterApp extends App with LazyLogging with Hyperparams {
   def main(args: Array[String]): Unit = {
     val port = 7777
     logger.info(s"Starting Master server on port $port")
-    val _NUM_WORKERS = Nil
-    val masterServer = new MasterServer(port, _NUM_WORKERS)
+    val masterServer = new MasterServer(port, _workerCount)
     masterServer.start()
     masterServer.blockUntilShutdown()
   }

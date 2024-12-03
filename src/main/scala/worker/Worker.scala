@@ -32,7 +32,7 @@ object WorkerApp extends App with LazyLogging {
   worker.start()
 }
 
-class WorkerService(masterAddress: String, inputDir: String, outputDir: String) extends LazyLogging {
+class WorkerService(masterAddress: String, inputDir: String, outputDir: String) extends LazyLogging with Hyperparams {
 
   // gRPC 채널 설정
   private val channel: ManagedChannel = ManagedChannelBuilder.forTarget(masterAddress).usePlaintext().build()
