@@ -3,6 +3,7 @@ package black.worker
 import io.grpc.{ManagedChannel, ManagedChannelBuilder}
 import worker._
 import black.message._
+import black.Master._
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
@@ -83,14 +84,17 @@ class WorkerServer(masterAddress: String, workerIp: String, inputDir: String, ou
     logger.info("WorkerService shutdown complete.")
   }
 }
-class WorkerService(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging {
+class WorkerService(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging with Hyperparams {
   private val channel: ManagedChannel = ManagedChannelBuilder.forTarget(masterAddress).usePlaintext().build()
   private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)
 
   private var workerId: Option[Int] = None
   private var sendBuffers: Map[Int, Seq[KeyValue]] = Map()
+  val receivePromises: Map[Int, Promise[Unit]] = (0 until _workerCount).map { workerId =>
+    workerId -> Promise[Unit]()
+  }.toMap
   private var receiveBuffers: Map[Int, Seq[KeyValue]] = Map()
-  private var localData: List[Data] = List()
+  private var localKeyValue: Seq[KeyValue] = inputDir
 
   private def registerWithMaster(): Unit = {
     val request = RegisterWorkerRequest(ip = workerIp)
@@ -171,7 +175,6 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   def shufflePhase(): Unit = {
-    val localKeyValue: Seq[KeyValue] = inputDir
     val partitionBoundaries: Seq[String] = ???
     // partition boundary에 따라 대상 노드를 결정
     def findTargetNode(key: String): String = {
@@ -180,7 +183,6 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
         case idx => idx.toString // 해당 노드의 ID로 설정
       }
     }
-
     // 데이터 분할: 로컬 데이터를 partitioning boundary에 따라 분할
     def partitionKeyValue(): Seq[KeyValue] = {
       for (kv <- localKeyValue) {
@@ -193,23 +195,29 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
       // 현재 노드에 남겨야 할 KeyValue들만 필터링하여 반환
       localKeyValue.filter(kv => findTargetNode(kv.key) == id)
     }
+    //전송
+    localKeyValue = partitionKeyValue()
     sendBuffers.foreach { case (targetNode, dataList) =>
       sendPartitionData(targetNode, dataList) //worker 간 통신
     }
-    //*TODO* Shuffling Complete Log
+    //Shuffling Complete Log
+    val allDataReceived: Future[Unit] = Future.sequence(receivePromises.values.map(_.future)).map(_ => ())
+    allDataReceived.onComplete { _ =>
+      notifyShuffleComplete()
+    }
+    println(s"Shuffle Finished")
   }
 
   override def sendPartitionData(request: PartitionDataRequest, responseObserver: StreamObserver[PartitionDataResponse]): Unit = {
     val senderWorkerId = request.senderWorkerId
     val dataList = request.dataList.asScala.toList.map(dataMessage => KeyValue(dataMessage.key, dataMessage.value))
 
-    storeReceivedData(senderWorkerId, dataList)
+    saveReceivedData(senderWorkerId, dataList)
 
     val response = PartitionDataResponse(success = true)
     responseObserver.onNext(response)
     responseObserver.onCompleted()
 
-    processReceivedData()
   }
 
   private def saveReceivedData(workerId: Int, dataList: Seq[KeyValue]): Unit = {
@@ -219,11 +227,8 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
       case None =>
         receiveBuffers = receiveBuffers + (workerId -> dataList)
     }
+    receivePromises(workerId).trySuccess(())
     println(s"Data stored for Worker")
-  }
-
-  private def processReceivedData(): Unit = {
-  //어쩌고저쩌고 merge하고 어쩌고 저쩌고 ㄱㄱ
   }
 
   private def notifyShuffleComplete(): Unit = {
@@ -265,6 +270,34 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     val partitionFiles = Files.list(Paths.get(outputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"partition_${workerId.getOrElse(0)}"))
 
+    def mergeBuffers(buffers: Map[Int, Seq[KeyValue]]): Seq[KeyValue] = {
+      // 각 버퍼의 이터레이터를 저장하는 맵
+      val iterators: Map[Int, Iterator[KeyValue]] = buffers.mapValues(_.iterator)
+      // 우선순위 큐를 사용하여 최소 힙(min-heap) 구현
+      implicit val kvOrdering: Ordering[(KeyValue, Int)] = Ordering.by[(KeyValue, Int), String](_._1.key)
+      val priorityQueue: PriorityQueue[(KeyValue, Int)] = PriorityQueue.empty(kvOrdering.reverse)
+      // 각 버퍼에서 첫 번째 요소를 큐에 추가
+      for ((id, iter) <- iterators) {
+        if (iter.hasNext) {
+          val kv = iter.next()
+          priorityQueue.enqueue((kv, id))
+        }
+      }
+      val result = mutable.Buffer[KeyValue]()
+      // 우선순위 큐가 빌 때까지 반복
+      while (priorityQueue.nonEmpty) {
+        // 가장 작은 키를 가진 KeyValue와 해당 버퍼의 ID를 가져옴
+        val (kv, id) = priorityQueue.dequeue()
+        result += kv
+        // 해당 버퍼의 이터레이터에서 다음 요소를 가져와 큐에 추가
+        val iter = iterators(id)
+        if (iter.hasNext) {
+          val nextKv = iter.next()
+          priorityQueue.enqueue((nextKv, id))
+        }
+      }
+      result.toSeq
+    }
     val mergedData = partitionFiles.flatMap { file =>
       val source = Source.fromFile(file.toFile)
       try source.getLines()
