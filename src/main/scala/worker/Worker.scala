@@ -112,7 +112,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
 
   def samplePhase(): Unit = {
     // get raw data
-    val files = Files.list(Paths.get(outputDir)).iterator().asScala.toList
+    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"gensort_${workerId.getOrElse(0)}")) // TODO replace with real files
     val data: Seq[KeyValue] = files.flatMap { file =>
       val source = Source.fromFile(file.toFile)
@@ -141,7 +141,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     val sampled: Seq[String] = samples.map(_.toString)
 
     // save sampmles
-    val outputFilePath = Paths.get(outputDir, s"sampled_$workerId")
+    val outputFilePath = Paths.get(inputDir, s"sampled_$workerId")
 
     // write the sample strings to the file
     try {
@@ -268,7 +268,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   private def mergePhase(): Unit = {
-    val partitionFiles = Files.list(Paths.get(outputDir)).iterator().asScala.toList
+    val partitionFiles = Files.list(Paths.get(inputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"partition_${workerId.getOrElse(0)}"))
 
     var buffers: Map[Int, Seq[KeyValue]] = receiveBuffers.updated(workerId, localKeyValue)
@@ -307,7 +307,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
       finally source.close()
     }.sorted
 
-    val outputFile = Paths.get(outputDir, s"merged_${workerId.getOrElse(0)}.txt").toFile
+    val outputFile = Paths.get(outputDir, s"merged_${workerId.getOrElse(0)}").toFile
     Files.write(outputFile.toPath, mergedData.mkString("\n").getBytes)
 
     logger.info(s"Merge phase completed. Merged data written to: ${outputFile.getPath}")
