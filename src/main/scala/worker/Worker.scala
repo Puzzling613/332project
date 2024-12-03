@@ -42,6 +42,9 @@ class WorkerServer(masterAddress: String, workerIp: String, inputDir: String, ou
       logger.info("Registering with Master...")
       registerWithMaster()
 
+      logger.info("Starting sample phase...")
+      samplePhase()
+
       logger.info("Starting shuffle phase...")
       shufflePhase()
 
@@ -89,6 +92,50 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
       case Failure(exception) =>
         logger.error("Failed to registered", exception)
         throw exception
+    }
+  }
+
+  def samplePhase(): Unit = {
+    val files = Files.list(Paths.get(outputDir)).iterator().asScala.toList
+      .filter(_.toFile.getName.startsWith(s"gensort_${workerId.getOrElse(0)}")) // TODO replace with real files
+
+    val data = files.flatMap { file =>
+      val source = Source.fromFile(file.toFile)
+      try source.getLines()
+      finally source.close()
+    }.sorted
+
+    val samples = ArrayBuffer[Int]()
+    val sampleCount = (p * data.length).toInt
+
+    // sort data by key
+    val sortedData = data.sortBy(_.key)
+
+    // interval calculation
+    val minKey = sortedData.head.key
+    val maxKey = sortedData.last.key
+    val interval = (maxKey - minKey).toDouble / sampleCount
+
+    // sample
+    for (i <- 0 until sampleCount) {
+      val sampleKey = (i * interval).toInt
+      samples.append(sampleKey)
+    }
+
+    // convert samples to Seq of strings
+    val sampleStrings = samples.map(_.toString)
+
+    // save sampmles
+    val outputFilePath = Paths.get(outputDir, s"sample_$workerId.txt")
+
+    try {
+      // write the sample strings to the file
+      Files.write(outputFilePath, sampleStrings.mkString("\n").getBytes)
+      logger.info(s"Samples saved to ${outputFilePath.toString}")
+    } catch {
+      case e: Exception =>
+        logger.error(s"Error saving samples to file: ${e.getMessage}", e)
+        throw e
     }
   }
 
