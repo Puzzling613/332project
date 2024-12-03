@@ -5,7 +5,8 @@ import worker._
 import black.message._
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
-
+import io.grpc.stub.StreamObserver
+import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
 import scala.collection.JavaConverters._
 import scala.io.Source
@@ -88,6 +89,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
 
   private var workerId: Option[Int] = None
   private var sendBuffers: Map[Int, Seq[KeyValue]] = Map()
+  private var receiveBuffers: Map[Int, Seq[KeyValue]] = Map()
   private var localData: List[Data] = List()
 
   private def registerWithMaster(): Unit = {
@@ -197,26 +199,29 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     //*TODO* Shuffling Complete Log
   }
 
-  def sendPartitionData(targetNode: Int, dataList: List[Data]): Unit = {
-    val targetWorkerIp = getWorkerIp(targetNode)
-    val channel = ManagedChannelBuilder.forTarget(s"$targetWorkerIp:7777")
-      .usePlaintext()
-      .build()
-    val stub = WorkerGrpc.blockingStub(channel)
+  override def sendPartitionData(request: PartitionDataRequest, responseObserver: StreamObserver[PartitionDataResponse]): Unit = {
+    val senderWorkerId = request.senderWorkerId
+    val dataList = request.dataList.asScala.toList.map(dataMessage => KeyValue(dataMessage.key, dataMessage.value))
 
-    val request = PartitionDataRequest(
-      senderWorkerId = workerId.getOrElse(0),
-      dataList = dataList.map(data => DataMessage(data.key, data.value)).asJava
-    )
+    val response = PartitionDataResponse(success = true)
+    responseObserver.onNext(response)
+    responseObserver.onCompleted()
 
-    Try(stub.sendPartitionData(request)) match {
-      case Success(reply) if reply.success =>
-        logger.info(s"Successfully sent data to Worker.")
-      case Failure(exception) =>
-        logger.error(s"Failed to send data to Worker.", exception)
-    } finally {
-      channel.shutdown()
+    processReceivedData()
+  }
+
+  private def saveReceivedData(workerId: Int, dataList: Seq[KeyValue]): Unit = {
+    receiveBuffers.get(workerId) match {
+      case Some(existingData) =>
+        receiveBuffers = receiveBuffers.updated(workerId, existingData ++ dataList)
+      case None =>
+        receiveBuffers = receiveBuffers + (workerId -> dataList)
     }
+    println(s"Data stored for Worker")
+  }
+
+  private def processReceivedData(): Unit = {
+  //어쩌고저쩌고 merge하고 어쩌고 저쩌고 ㄱㄱ
   }
 
   private def notifyShuffleComplete(): Unit = {
