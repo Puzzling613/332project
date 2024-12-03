@@ -175,7 +175,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   def shufflePhase(): Unit = {
-    val partitionBoundaries: Seq[String] = ???
+    //val partitionBoundaries: Seq[String] = ???
     // partition boundary에 따라 대상 노드를 결정
     def findTargetNode(key: String): String = {
       partitionBoundaries.indexWhere(pk => key < pk) match {
@@ -270,6 +270,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     val partitionFiles = Files.list(Paths.get(outputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"partition_${workerId.getOrElse(0)}"))
 
+    var buffers: Map[Int, Seq[KeyValue]] = receiveBuffers.updated(workerId, localKeyValue)
     def mergeBuffers(buffers: Map[Int, Seq[KeyValue]]): Seq[KeyValue] = {
       // 각 버퍼의 이터레이터를 저장하는 맵
       val iterators: Map[Int, Iterator[KeyValue]] = buffers.mapValues(_.iterator)
@@ -298,6 +299,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
       }
       result.toSeq
     }
+    partitionFiles = mergeBuffers(buffers)
     val mergedData = partitionFiles.flatMap { file =>
       val source = Source.fromFile(file.toFile)
       try source.getLines()
