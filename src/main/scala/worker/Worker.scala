@@ -207,7 +207,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
 
     val response = PartitionDataResponse(success = true)
     responseObserver.onNext(response)
-    responseObserver.onCompleted()
+    responseObserver.w5tonCompleted()
 
     processReceivedData()
   }
