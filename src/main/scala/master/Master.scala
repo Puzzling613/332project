@@ -72,7 +72,7 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
-  override def PickBoundariesComplete(request: GetDataRequest): Future[WorkerDataReply] = {
+  override def PickBoundariesComplete(request: GetDataRequest): Future[GetDataResponse] = {
     samples :+= request.sample
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 

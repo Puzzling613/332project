@@ -3,7 +3,7 @@ package black.worker
 import io.grpc.{ManagedChannel, ManagedChannelBuilder}
 import worker._
 import black.message._
-import black.Master._
+import black.master.Hyperparams
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
