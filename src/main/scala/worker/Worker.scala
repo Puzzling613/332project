@@ -110,31 +110,31 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     // get raw data
     val files = Files.list(Paths.get(outputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"gensort_${workerId.getOrElse(0)}")) // TODO replace with real files
-    val data = files.flatMap { file =>
+    val data: Seq[KeyValue] = files.flatMap { file =>
       val source = Source.fromFile(file.toFile)
       try source.getLines()
       finally source.close()
     }.sorted
 
-    val samples = ArrayBuffer[Int]()
-    val sampleCount = (p * data.length).toInt
+    val samples: ArrayBuffer[Int] = ArrayBuffer[Int]()
+    val sampleCount: Int = (p * data.length).toInt
 
     // sort data by key
-    val sortedData = data.sortBy(_.key)
+    val sortedData: Seq[String] = data.sortBy(_.key)
 
     // interval calculation
-    val minKey = sortedData.head.key
-    val maxKey = sortedData.last.key
-    val interval = (maxKey - minKey).toDouble / sampleCount
+    val minKey: String = sortedData.head.key
+    val maxKey: String = sortedData.last.key
+    val interval: Double = (maxKey - minKey).toDouble / sampleCount
 
     // sample
     for (i <- 0 until sampleCount) {
-      val sampleKey = (i * interval).toInt
+      val sampleKey: Int = (i * interval).toInt
       samples.append(sampleKey)
     }
 
     // convert samples to Seq of strings
-    val sampled = samples.map(_.toString)
+    val sampled: Seq[String] = samples.map(_.toString)
 
     // save sampmles
     val outputFilePath = Paths.get(outputDir, s"sampled_$workerId")
