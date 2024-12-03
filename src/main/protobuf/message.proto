@@ -6,7 +6,7 @@ service Master {
   rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);
   rpc ShuffleComplete(ShuffleCompleteRequest) returns (ShuffleCompleteReply);
   rpc MergeSortComplete(MergeSortCompleteRequest) returns (MergeSortCompleteReply);
-  rpc GetWorkerData(GetDataRequest) returns (GetDataResponse);
+  rpc PickBoundariesComplete(GetDataRequest) returns (GetDataResponse);
   rpc MergeComplete(MergeCompleteRequest) returns (MergeCompleteReply); // Merge 완료 상태 전달
 }
 

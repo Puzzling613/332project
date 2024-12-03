@@ -8,19 +8,22 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.typesafe.scalalogging.LazyLogging
 import black.message._
 
+case class KeyValue(key: String, value: String)
+
 object MasterApp extends App with LazyLogging {
   def main(args: Array[String]): Unit = {
     val port = 7777
     logger.info(s"Starting Master server on port $port")
-    val masterServer = new MasterServer(port, workers)
+    val _NUM_WORKERS = Nil
+    val masterServer = new MasterServer(port, _NUM_WORKERS)
     masterServer.start()
     masterServer.blockUntilShutdown()
   }
 }
 
-class MasterServer(port: Int, expectedWorkers: Int) extends LazyLogging {
+class MasterServer(port: Int, numWorkers: Int) extends LazyLogging {
   private var server: Server = _
-  private val service = new MasterService(expectedWorkers)
+  private val service = new MasterService(numWorkers)
 
   def start(): Unit = {
     server = ServerBuilder
@@ -45,34 +48,35 @@ class MasterServer(port: Int, expectedWorkers: Int) extends LazyLogging {
   }
 }
 
-class MasterService(expectedWorkers: Int) extends SortingServiceGrpc.SortingService with LazyLogging {
+class MasterService(numWorkers: Int) extends SortingServiceGrpc.SortingService with LazyLogging {
   private val workers = TrieMap[Int, String]() // Worker ID -> IP
   private val workerIdCounter = new AtomicInteger(0)
   private var shuffleCompletedWorkers = Set.empty[Int]
   private var mergeCompletedWorkers = Set.empty[Int]
-  private var samples = List.empty[Seq[Int]] // 샘플 데이터 저장
-  private var partitionBoundaries = Seq.empty[Int] // 파티션 경계 저장
+  private var samples = List.empty[Seq[KeyValue]] // 샘플 데이터 저장
+  private var partitionBoundaries = Seq.empty[String] // 파티션 경계 저장
 
   override def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
     val workerId = workerIdCounter.incrementAndGet()
     workers.put(workerId, request.ip)
     logger.info(s"Worker registered: ID=$workerId, IP=${request.ip}")
 
-    if (workers.size == expectedWorkers) {
+    if (workers.size == numWorkers) {
       logger.info("All workers registered.")
     }
 
     Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
-  override def getWorkerData(request: WorkerDataRequest): Future[WorkerDataReply] = {
+  override def PickBoundariesComplete(request: WorkerDataRequest): Future[WorkerDataReply] = {
     samples :+= request.sample
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 
-    if (samples.size == expectedWorkers) {
+    if (samples.size == numWorkers) {
       val sortedSamples = samples.flatten.sorted
-      val partitionSize = sortedSamples.length / expectedWorkers
-      partitionBoundaries = (1 until expectedWorkers).map(i => sortedSamples(i * partitionSize))
+      val partitionSize = sortedSamples.length / numWorkers
+      // pick numWorkers-1 boundaries
+      partitionBoundaries = (1 until numWorkers).map(i => sortedSamples(i * partitionSize))
       logger.info(s"Partition boundaries calculated: $partitionBoundaries")
       workers.keys.foreach { workerId =>
         logger.info(s"Sending partition boundaries to Worker ID: $workerId")
@@ -91,7 +95,7 @@ class MasterService(expectedWorkers: Int) extends SortingServiceGrpc.SortingServ
     shuffleCompletedWorkers += request.workerId
     logger.info(s"Shuffle completed by Worker ID: ${request.workerId}")
 
-    if (shuffleCompletedWorkers.size == expectedWorkers) {
+    if (shuffleCompletedWorkers.size == numWorkers) {
       logger.info("All workers completed Shuffle. Starting Merge phase...")
       workers.keys.foreach { workerId =>
         logger.info(s"Notifying Worker ID: $workerId to start merging.")
@@ -110,7 +114,7 @@ class MasterService(expectedWorkers: Int) extends SortingServiceGrpc.SortingServ
     mergeCompletedWorkers += request.workerId
     logger.info(s"Merge completed by Worker ID: ${request.workerId}")
 
-    if (mergeCompletedWorkers.size == expectedWorkers) {
+    if (mergeCompletedWorkers.size == numWorkers) {
       logger.info("All workers completed Merge. Distributed Sorting completed successfully.")
     }
 

@@ -12,6 +12,8 @@ import scala.concurrent.ExecutionContext
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
+case class KeyValue(key: String, value: String)
+
 object WorkerApp extends App with LazyLogging {
 
   if (args.length < 4 || !args.contains("-I") || !args.contains("-O")) {
