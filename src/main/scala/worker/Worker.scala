@@ -4,6 +4,7 @@ import io.grpc.{ManagedChannel, ManagedChannelBuilder}
 import worker._
 import black.message._
 import com.typesafe.scalalogging.LazyLogging
+import scala.collection.mutable.ArrayBuffer
 
 import java.nio.file.{Files, Paths}
 import scala.collection.JavaConverters._
@@ -104,9 +105,9 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   def samplePhase(): Unit = {
+    // get raw data
     val files = Files.list(Paths.get(outputDir)).iterator().asScala.toList
       .filter(_.toFile.getName.startsWith(s"gensort_${workerId.getOrElse(0)}")) // TODO replace with real files
-
     val data = files.flatMap { file =>
       val source = Source.fromFile(file.toFile)
       try source.getLines()
@@ -131,14 +132,14 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     }
 
     // convert samples to Seq of strings
-    val sampleStrings = samples.map(_.toString)
+    val sampled = samples.map(_.toString)
 
     // save sampmles
-    val outputFilePath = Paths.get(outputDir, s"sample_$workerId.txt")
+    val outputFilePath = Paths.get(outputDir, s"sampled_$workerId")
 
+    // write the sample strings to the file
     try {
-      // write the sample strings to the file
-      Files.write(outputFilePath, sampleStrings.mkString("\n").getBytes)
+      Files.write(outputFilePath, sampled.mkString("\n").getBytes)
       logger.info(s"Samples saved to ${outputFilePath.toString}")
     } catch {
       case e: Exception =>
@@ -148,7 +149,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
   }
 
   private def sendSampleData(): Unit = {
-    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList.filter(_.toFile.isFile)
+    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList.filter(_.toFile.getName.startsWith(s"sample_$workerId"))
     val sampleData = files.flatMap { file =>
       val source = Source.fromFile(file.toFile)
       try source.getLines().take(10).toSeq
@@ -166,7 +167,6 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
         throw exception
     }
   }
-
 
   def shufflePhase(): Unit = {
     val localKeyValue: Seq[KeyValue] = inputDir
