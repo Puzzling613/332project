@@ -203,6 +203,8 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     val senderWorkerId = request.senderWorkerId
     val dataList = request.dataList.asScala.toList.map(dataMessage => KeyValue(dataMessage.key, dataMessage.value))
 
+    storeReceivedData(senderWorkerId, dataList)
+
     val response = PartitionDataResponse(success = true)
     responseObserver.onNext(response)
     responseObserver.onCompleted()
