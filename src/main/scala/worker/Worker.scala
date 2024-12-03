@@ -30,17 +30,10 @@ object WorkerApp extends App with LazyLogging {
   worker.start()
 }
 
-class WorkerService(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging {
+class WorkerServer(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging {
   private val workerServer: Server = ServerBuilder.forPort(7777)
-    .addService(new WorkerImpl(this))
+    .addService(new WorkerService(this))
     .build()
-  private val channel: ManagedChannel = ManagedChannelBuilder.forTarget(masterAddress).usePlaintext().build()
-  private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)
-
-  private var workerId: Option[Int] = None
-  private var sendBuffers: Map[Int, List[Data]] = Map()
-  private var localData: List[Data] = List()
-
   def start(): Unit = {
     try {
       logger.info("Starting WorkerService...")
@@ -76,6 +69,14 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     channel.shutdown()
     logger.info("WorkerService shutdown complete.")
   }
+}
+class WorkerService(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging {
+  private val channel: ManagedChannel = ManagedChannelBuilder.forTarget(masterAddress).usePlaintext().build()
+  private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)
+
+  private var workerId: Option[Int] = None
+  private var sendBuffers: Map[Int, List[Data]] = Map()
+  private var localData: List[Data] = List()
 
   private def registerWithMaster(): Unit = {
     val request = RegisterWorkerRequest(ip = workerIp)
@@ -90,6 +91,27 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
         throw exception
     }
   }
+
+  private def sendSampleData(): Unit = {
+    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList.filter(_.toFile.isFile)
+    val sampleData = files.flatMap { file =>
+      val source = Source.fromFile(file.toFile)
+      try source.getLines().take(10).toSeq
+      finally source.close()
+    }
+
+    val request = WorkerDataRequest(workerId = workerId.getOrElse(0), sample = sampleData)
+    val response = Try(masterStub.getWorkerData(request))
+
+    response match {
+      case Success(reply) =>
+        logger.info(s"Sample data sent. Received partition boundaries: ${reply.partitionBoundaries}")
+      case Failure(exception) =>
+        logger.error("Failed to send sample data to Master", exception)
+        throw exception
+    }
+  }
+
 
   def shufflePhase(): Unit = {
     //*TODO* Implement shuffling
