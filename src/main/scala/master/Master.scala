@@ -12,6 +12,7 @@ case class KeyValue(key: String, value: String)
 
 trait Hyperparams {
   val _workerCount = Nil
+  val _samplingRate = 0.05
 }
 
 object MasterApp extends App with LazyLogging with Hyperparams {
