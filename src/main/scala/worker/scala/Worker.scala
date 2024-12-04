@@ -1,12 +1,12 @@
-package worker
+package worker.scala
 
 import io.grpc.{ManagedChannel, ManagedChannelBuilder}
 import worker._
 import master._
-import master.Hyperparams
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
+import master.scala.Hyperparams
 import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
 import scala.collection.JavaConverters._

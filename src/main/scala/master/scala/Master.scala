@@ -1,4 +1,4 @@
-package master
+package master.scala
 
 import io.grpc.{Server, ServerBuilder}
 import scala.concurrent.{ExecutionContext, Future}
@@ -6,7 +6,7 @@ import scala.collection.concurrent.TrieMap
 import scala.util.Sorting
 import java.util.concurrent.atomic.AtomicInteger
 import com.typesafe.scalalogging.LazyLogging
-import message._
+import masterMessage._
 
 case class KeyValue(key: String, value: String)
 
