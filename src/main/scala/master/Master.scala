@@ -61,15 +61,15 @@ class MasterService(numWorkers: Int) extends LazyLogging {
   private var partitionBoundaries = Seq.empty[String]
 
   def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
-    val _workerId = workerIdCounter.incrementAndGet()
-    workers.put(_workerId, request.ip)
-    logger.info(s"Worker registered: ID=$_workerId, IP=${request.ip}")
+    val workerId = workerIdCounter.incrementAndGet()
+    workers.put(workerId, request.ip)
+    logger.info(s"Worker registered: ID=$workerId, IP=${request.ip}")
 
     if (workers.size == numWorkers) {
       logger.info("All workers registered.")
     }
 
-    Future.successful(RegisterWorkerReply(workerId = _workerId))
+    Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
   def PickBoundariesComplete(request: GetDataRequest): Future[GetDataResponse] = {
