@@ -4,9 +4,9 @@ lazy val root = (project in file("."))
   .settings(
     name := "DistributedSorting",
     version := "0.1",
-    scalaVersion := "2.13.12",
-    libraryDependencies ++= Seq(
-      "io.grpc" % "grpc-netty" % "1.53.0",
+    scalaVersion := "2.12.19",
+    libraryDependencies +s+= Seq(
+      "io.grpc" % "grpc-netty" % "1.56.0",
       "io.grpc" % "grpc-protobuf" % "1.53.0",
       "io.grpc" % "grpc-stub" % "1.53.0",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",

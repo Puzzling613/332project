@@ -1,7 +1,7 @@
 import io.grpc.{ManagedChannel, ManagedChannelBuilder, Server, ServerBuilder}
 import scala.concurrent.ExecutionContext
-import black.worker._
-import black.master._
+import worker._
+import master._
 
 // Master test server
 object TestMaster extends App {

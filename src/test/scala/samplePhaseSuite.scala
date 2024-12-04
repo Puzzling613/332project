@@ -1,7 +1,4 @@
-import org.scalatest.funsuite.AnyFunSuite
-import java.nio.file.{Files, Paths}
-import java.nio.charset.StandardCharsets
-import black.master._
+import java.nio.file.Paths
 
 case class KeyValue(key: String, value: String)
 

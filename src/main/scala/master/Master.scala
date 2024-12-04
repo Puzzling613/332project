@@ -1,4 +1,4 @@
-package black.master
+package master
 
 import io.grpc.{Server, ServerBuilder}
 import scala.concurrent.{ExecutionContext, Future}
@@ -6,7 +6,7 @@ import scala.collection.concurrent.TrieMap
 import scala.util.Sorting
 import java.util.concurrent.atomic.AtomicInteger
 import com.typesafe.scalalogging.LazyLogging
-import black.message._
+import message._
 
 case class KeyValue(key: String, value: String)
 
@@ -16,7 +16,7 @@ trait Hyperparams {
 }
 
 object MasterApp extends App with LazyLogging with Hyperparams {
-  def main(args: Array[String]): Unit = {
+  override def main(args: Array[String]): Unit = {
     val port = 7777
     logger.info(s"Starting Master server on port $port")
     val masterServer = new MasterServer(port, _workerCount)
@@ -52,7 +52,7 @@ class MasterServer(port: Int, numWorkers: Int) extends LazyLogging {
   }
 }
 
-class MasterService(numWorkers: Int) with LazyLogging {
+class MasterService(numWorkers: Int) extends LazyLogging {
   private val workers = TrieMap[Int, String]()
   private val workerIdCounter = new AtomicInteger(0)
   private var shuffleCompletedWorkers = Set.empty[Int]
@@ -60,7 +60,7 @@ class MasterService(numWorkers: Int) with LazyLogging {
   private var samples = List.empty[Seq[KeyValue]]
   private var partitionBoundaries = Seq.empty[String]
 
-  override def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
+  def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
     val workerId = workerIdCounter.incrementAndGet()
     workers.put(workerId, request.ip)
     logger.info(s"Worker registered: ID=$workerId, IP=${request.ip}")
@@ -72,7 +72,7 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(RegisterWorkerReply(workerId = workerId))
   }
 
-  override def PickBoundariesComplete(request: GetDataRequest): Future[GetDataResponse] = {
+  def PickBoundariesComplete(request: GetDataRequest): Future[GetDataResponse] = {
     samples :+= request.sample
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 
@@ -90,12 +90,12 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(GetDataResponse(partitionBoundaries = partitionBoundaries))
   }
 
-  override def shuffleStart(request: ShuffleRequest): Future[ShuffleReply] = {
+  def shuffleStart(request: ShuffleRequest): Future[ShuffleReply] = {
     logger.info("Shuffle started for all workers")
     Future.successful(ShuffleReply(success = true))
   }
 
-  override def shuffleComplete(request: ShuffleCompleteRequest): Future[ShuffleCompleteReply] = {
+  def shuffleComplete(request: ShuffleCompleteRequest): Future[ShuffleCompleteReply] = {
     shuffleCompletedWorkers += request.workerId
     logger.info(s"Shuffle completed by Worker ID: ${request.workerId}")
 
@@ -109,12 +109,12 @@ class MasterService(numWorkers: Int) with LazyLogging {
     Future.successful(ShuffleCompleteReply(success = true))
   }
 
-  override def merge(request: MergeRequest): Future[MergeReply] = {
+  def merge(request: MergeRequest): Future[MergeReply] = {
     logger.info(s"Merge started for Worker ID: ${request.workerId}")
     Future.successful(MergeReply(success = true))
   }
 
-  override def mergeComplete(request: MergeCompleteRequest): Future[MergeCompleteReply] = {
+  def mergeComplete(request: MergeCompleteRequest): Future[MergeCompleteReply] = {
     mergeCompletedWorkers += request.workerId
     logger.info(s"Merge completed by Worker ID: ${request.workerId}")
 

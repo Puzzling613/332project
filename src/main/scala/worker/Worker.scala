@@ -1,15 +1,9 @@
-package black.worker
+package worker
 
-import io.grpc.{ManagedChannel, ManagedChannelBuilder}
-import worker._
-import black.message._
-import black.master.Hyperparams
-import com.typesafe.scalalogging.LazyLogging
-import scala.collection.mutable.ArrayBuffer
-import io.grpc.stub.StreamObserver
-import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
 import scala.collection.JavaConverters._
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 

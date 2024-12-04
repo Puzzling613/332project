@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/projectNetwork.iml" filepath="$PROJECT_DIR$/projectNetwork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/projectnetwork.iml" filepath="$PROJECT_DIR$/.idea/modules/projectnetwork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/projectnetwork.projectnetwork-build.iml" filepath="$PROJECT_DIR$/.idea/modules/projectnetwork.projectnetwork-build.iml" />
     </modules>
   </component>
 </project>
