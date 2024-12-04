@@ -1,5 +1,13 @@
 package worker
 
+import io.grpc.{ManagedChannel, ManagedChannelBuilder}
+import worker._
+import master._
+import master.Hyperparams
+import com.typesafe.scalalogging.LazyLogging
+import scala.collection.mutable.ArrayBuffer
+import io.grpc.stub.StreamObserver
+import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
@@ -16,15 +24,7 @@ object WorkerApp extends App with LazyLogging {
   }
 
   val masterAddress = args(0)
-  val input = args(args.indexOf("-I") + 1)
-  // 문자열을 100글자 단위로 분할
-  val chunks: Iterator[String] = input.grouped(100)
-  // 각 조각을 KeyValue 객체로 매핑하여 시퀀스로 변환
-  val inputDir: Seq[KeyValue] = chunks.map { chunk =>
-    val key = if (chunk.length >= 10) chunk.substring(0, 10) else chunk
-    val value = if (chunk.length > 10) chunk.substring(10) else ""
-    KeyValue(key, value)
-  }.toSeq
+  val inputDir = args(args.indexOf("-I") + 1)
   val outputDir = args(args.indexOf("-O") + 1)
   val workerIp = java.net.InetAddress.getLocalHost.getHostAddress
 
@@ -88,7 +88,16 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     workerId -> Promise[Unit]()
   }.toMap
   private var receiveBuffers: Map[Int, Seq[KeyValue]] = Map()
-  private var localKeyValue: Seq[KeyValue] = inputDir
+
+  // 문자열을 100글자 단위로 분할
+  private val chunks: Iterator[String] = inputDir.grouped(100)
+  // 각 조각을 KeyValue 객체로 매핑하여 시퀀스로 변환
+  private val input: Seq[KeyValue] = chunks.map { chunk =>
+    val key = if (chunk.length >= 10) chunk.substring(0, 10) else chunk
+    val value = if (chunk.length > 10) chunk.substring(10) else ""
+    KeyValue(key, value)
+  }.toSeq
+  private val localKeyValue: Seq[KeyValue] = input
 
   private def registerWithMaster(): Unit = {
     val request = RegisterWorkerRequest(ip = workerIp)
@@ -106,19 +115,13 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
 
   def samplePhase(): Unit = {
     // get raw data
-    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList
-      .filter(_.toFile.getName.startsWith(s"gensort_${workerId.getOrElse(0)}")) // TODO replace with real files
-    val data: Seq[KeyValue] = files.flatMap { file =>
-      val source = Source.fromFile(file.toFile)
-      try source.getLines()
-      finally source.close()
-    }.sorted
+    val data = localKeyValue
 
     val samples: ArrayBuffer[Int] = ArrayBuffer[Int]()
-    val sampleCount: Int = (p * data.length).toInt
+    val sampleCount: Int = (_samplingRate * data.length).toInt
 
     // sort data by key
-    val sortedData: Seq[String] = data.sortBy(_.key)
+    val sortedData: Seq[KeyValue] = data.sortBy(_.key)
 
     // interval calculation
     val minKey: String = sortedData.head.key
@@ -134,7 +137,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     // convert samples to Seq of strings
     val sampled: Seq[String] = samples.map(_.toString)
 
-    // save sampmles
+    // save samples
     val outputFilePath = Paths.get(inputDir, s"sampled_$workerId")
 
     // write the sample strings to the file

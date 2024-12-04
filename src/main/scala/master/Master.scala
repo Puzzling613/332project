@@ -11,7 +11,7 @@ import message._
 case class KeyValue(key: String, value: String)
 
 trait Hyperparams {
-  val _workerCount: Int = Nil
+  val _workerCount: Int = 3 // TODO set count
   val _samplingRate: Double = 0.05
 }
 
@@ -57,19 +57,19 @@ class MasterService(numWorkers: Int) extends LazyLogging {
   private val workerIdCounter = new AtomicInteger(0)
   private var shuffleCompletedWorkers = Set.empty[Int]
   private var mergeCompletedWorkers = Set.empty[Int]
-  private var samples = List.empty[Seq[KeyValue]]
+  private var samples = List.empty[Seq[String]]
   private var partitionBoundaries = Seq.empty[String]
 
   def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
-    val workerId = workerIdCounter.incrementAndGet()
-    workers.put(workerId, request.ip)
-    logger.info(s"Worker registered: ID=$workerId, IP=${request.ip}")
+    val _workerId = workerIdCounter.incrementAndGet()
+    workers.put(_workerId, request.ip)
+    logger.info(s"Worker registered: ID=$_workerId, IP=${request.ip}")
 
     if (workers.size == numWorkers) {
       logger.info("All workers registered.")
     }
 
-    Future.successful(RegisterWorkerReply(workerId = workerId))
+    Future.successful(RegisterWorkerReply(workerId = _workerId))
   }
 
   def PickBoundariesComplete(request: GetDataRequest): Future[GetDataResponse] = {
@@ -77,10 +77,10 @@ class MasterService(numWorkers: Int) extends LazyLogging {
     logger.info(s"Sample data received from Worker ID: ${request.workerId}")
 
     if (samples.size == numWorkers) {
-      val sortedSamples: List[KeyValue] = samples.flatten.sorted
+      val sortedSamples: List[String] = samples.flatten.sorted
       val partitionSize: Int = sortedSamples.length / numWorkers
       // pick numWorkers-1 boundaries
-      partitionBoundaries: Seq[String] = (1 until numWorkers).map(i => sortedSamples(i * partitionSize))
+      val partitionBoundaries: Seq[String] = (1 until numWorkers).map(i => sortedSamples(i * partitionSize))
       logger.info(s"Partition boundaries calculated: $partitionBoundaries")
       workers.keys.foreach { workerId =>
         logger.info(s"Sending partition boundaries to Worker ID: $workerId")
