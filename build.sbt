@@ -11,13 +11,14 @@ lazy val root = (project in file("."))
       "io.grpc" % "grpc-protobuf" % "1.53.0",
       "io.grpc" % "grpc-stub" % "1.53.0",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-      "org.slf4j" % "slf4j-simple" % "2.0.9", // SLF4J Simple
+      "org.slf4j" % "slf4j-simple" % "2.0.9",
       "com.thesamet.scalapb" %% "scalapb-runtime" % "0.11.6",
+      "com.thesamet.scalapb" %% "compilerplugin" % "0.11.6",
       "org.scalatest" % "scalatest_2.10" % "2.2.1" % "test"
     ),
 
     Compile / PB.targets := Seq(
-      scalapb.gen(flatPackage = true) -> (Compile / sourceManaged).value / "scalapb"
+      scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
     )
   )
 

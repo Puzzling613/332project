@@ -6,10 +6,9 @@ import master._
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
-import master.scala.Hyperparams
+import master.resources.Hyperparams
 import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
-import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Future
 import scala.io.Source

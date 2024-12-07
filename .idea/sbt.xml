@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaSbtSettings">
+    <option name="customLauncherPath" />
+    <option name="customVMEnabled" value="true" />
+    <option name="customVMPath" value="$USER_HOME$/.jdks/azul-1.8.0_422" />
     <option name="linkedExternalProjectsSettings">
       <SbtProjectSettings>
         <option name="converterVersion" value="2" />
@@ -11,7 +14,8 @@
             <option value="$PROJECT_DIR$/project" />
           </set>
         </option>
-        <option name="sbtVersion" value="1.5.5" />
+        <option name="resolveSbtClassifiers" value="true" />
+        <option name="useSbtShellForImport" value="true" />
       </SbtProjectSettings>
     </option>
   </component>

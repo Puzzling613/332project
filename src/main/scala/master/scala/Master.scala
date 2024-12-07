@@ -1,4 +1,4 @@
-package master.scala
+package master
 
 import io.grpc.{Server, ServerBuilder}
 import scala.concurrent.{ExecutionContext, Future}
@@ -6,7 +6,7 @@ import scala.collection.concurrent.TrieMap
 import scala.util.Sorting
 import java.util.concurrent.atomic.AtomicInteger
 import com.typesafe.scalalogging.LazyLogging
-import masterMessage._
+import message._
 
 case class KeyValue(key: String, value: String)
 
@@ -63,7 +63,7 @@ class MasterService(numWorkers: Int) extends LazyLogging {
   def registerWorker(request: RegisterWorkerRequest): Future[RegisterWorkerReply] = {
     val _workerId = workerIdCounter.incrementAndGet()
     workers.put(_workerId, request.ip)
-    logger.info(s"Worker registered: ID=$_workerId, IP=${request.ip}")
+    logger.info(s"Worker registered: ID=${_workerId}, IP=${request.ip}")
 
     if (workers.size == numWorkers) {
       logger.info("All workers registered.")
