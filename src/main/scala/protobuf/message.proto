@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package black.message;
+package message;
 
 service Master {
   rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);
