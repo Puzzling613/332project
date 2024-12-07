@@ -117,7 +117,7 @@ class WorkerService(masterAddress: String, workerIp: String, inputDir: String, o
     val data = localKeyValue
 
     val samples: ArrayBuffer[Int] = ArrayBuffer[Int]()
-    val sampleCount: Int = (_samplingRate * data.length).toInt
+    val sampleCount: Int = (_samplingRate * data.length).toInt + 1
 
     // sort data by key
     val sortedData: Seq[KeyValue] = data.sortBy(_.key)
