@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package message;
+package com.main.ds;
 
 service Master {
   rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);

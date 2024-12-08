@@ -1,3 +1,5 @@
+addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.4")
+
 enablePlugins(JvmPlugin, ProtocPlugin)
 
 lazy val root = (project in file("."))
@@ -21,8 +23,3 @@ lazy val root = (project in file("."))
       scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
     )
   )
-
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.4")
-
-// ScalaPB 컴파일러 플러그인 추가
-libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.11.6"
