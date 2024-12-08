@@ -6,7 +6,7 @@ import scala.collection.concurrent.TrieMap
 import scala.util.Sorting
 import java.util.concurrent.atomic.AtomicInteger
 import com.typesafe.scalalogging.LazyLogging
-import src.main.scala.ds._
+import src.main.ds.message._
 
 case class KeyValue(key: String, value: String)
 

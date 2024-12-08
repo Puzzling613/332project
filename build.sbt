@@ -17,9 +17,11 @@ lazy val root = (project in file("."))
       "com.thesamet.scalapb" %% "scalapb-runtime" % "0.11.6",
       "com.thesamet.scalapb" %% "compilerplugin" % "0.11.6",
       "org.scalatest" % "scalatest_2.10" % "2.2.1" % "test"
-    ),
-
-    Compile / PB.targets := Seq(
-      scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
     )
   )
+
+//Compile / PB.protoSources += file("src/main/ds/protobuf")
+
+Compile / PB.targets := Seq(
+  //scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
+)

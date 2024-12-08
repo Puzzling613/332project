@@ -4,7 +4,7 @@ import io.grpc.{ManagedChannel, ManagedChannelBuilder}
 import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
-import src.main.scala.ds.Hyperparams
+import src.main.ds.Hyperparams
 import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
 import scala.collection.mutable.ArrayBuffer
