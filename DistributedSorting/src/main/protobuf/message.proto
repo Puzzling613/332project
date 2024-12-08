@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package message;
+
+service MasterService {
+  rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply);
+  rpc shuffleComplete(ShuffleCompleteRequest) returns (ShuffleCompleteReply);
+  rpc sortComplete(SortCompleteRequest) returns (SortCompleteReply);
+  rpc pickBoundariesComplete(GetDataRequest) returns (GetDataReply);
+  rpc mergeComplete(MergeCompleteRequest) returns (MergeCompleteReply); // Merge 완료 상태 전달
+  rpc shuffleStart(ShuffleRequest) returns (ShuffleReply);
+  rpc sortStart(SortRequest) returns (SortReply);
+}
+
+service WorkerService {
+  rpc SendPartitionData(PartitionDataRequest) returns (PartitionDataReply);
+}
+
+message RegisterWorkerRequest {
+  string ip = 1;
+}
+
+message RegisterWorkerReply {
+  int32 workerId = 1;
+}
+
+message ShuffleRequest {
+  int32 workerId = 1;
+  repeated bytes records = 2; // 대용량 데이터를 효과적으로 전달하기 위해 bytes 사용
+}
+
+message ShuffleReply {
+  bool success = 1;
+}
+
+message ShuffleCompleteRequest {
+  int32 workerId = 1;
+}
+
+message ShuffleCompleteReply {
+  bool success = 1;
+}
+
+message SortRequest {
+  int32 workerId = 1;
+}
+
+message SortReply {
+  bool success = 1;
+}
+
+message SortCompleteRequest {
+  int32 workerId = 1;
+}
+
+message SortCompleteReply {
+  bool success = 1;
+}
+
+message MergeCompleteRequest {
+  int32 workerId = 1;
+}
+
+message MergeCompleteReply {
+  bool success = 1;
+}
+
+message PartitionBoundaries {
+  string startKey = 1;
+  string endKey = 2;
+}
+
+message GetDataRequest {
+  repeated string sample =1;
+  int32 workerId = 2;
+}
+
+message GetDataReply {
+  repeated string partitionBoundaries = 1;
+}
+
+message PartitionDataRequest {
+  int32 senderWorkerId = 1;
+  repeated string partitionBoundaries = 2;
+  repeated string keys = 3;
+  repeated string values = 4;
+}
+
+message PartitionDataReply {
+  bool success = 1;
+}
