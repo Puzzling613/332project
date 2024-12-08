@@ -1,0 +1,187 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(08cce44a-e59f-41ca-9e94-caf68cc3ae64), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 22 Scala sources to C:\D\Univ\sd\332project\DistributedSorting\target\scala-2.13\classes ...[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:34:10: value start is not a member of machine.WorkerService[0m
+[0m[[0m[31merror[0m] [0m[0m  worker.start()[0m
+[0m[[0m[31merror[0m] [0m[0m         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:38:29: not found: type Server[0m
+[0m[[0m[31merror[0m] [0m[0m  private val workerServer: Server = ServerBuilder.forPort(7777)[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:38:38: not found: value ServerBuilder[0m
+[0m[[0m[31merror[0m] [0m[0m  private val workerServer: Server = ServerBuilder.forPort(7777)[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:39:17: not enough arguments for constructor WorkerService: (masterAddress: String, workerIp: String, inputDir: String, outputDir: String): machine.WorkerService.[0m
+[0m[[0m[31merror[0m] [0m[0mUnspecified value parameters workerIp, inputDir, outputDir.[0m
+[0m[[0m[31merror[0m] [0m[0m    .addService(new WorkerService(this))[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:47:7: not found: value registerWithMaster[0m
+[0m[[0m[31merror[0m] [0m[0m      registerWithMaster()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:50:7: not found: value samplePhase[0m
+[0m[[0m[31merror[0m] [0m[0m      samplePhase()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:53:7: not found: value shufflePhase[0m
+[0m[[0m[31merror[0m] [0m[0m      shufflePhase()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:56:7: not found: value notifyShuffleComplete[0m
+[0m[[0m[31merror[0m] [0m[0m      notifyShuffleComplete()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:59:7: not found: value sortPhase[0m
+[0m[[0m[31merror[0m] [0m[0m      sortPhase()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:62:7: not found: value notifySortComplete[0m
+[0m[[0m[31merror[0m] [0m[0m      notifySortComplete()[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:76:5: not found: value channel[0m
+[0m[[0m[31merror[0m] [0m[0m    channel.shutdown()[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:82:27: not found: value MasterGrpc[0m
+[0m[[0m[31merror[0m] [0m[0m  private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:82:59: not found: value MasterGrpc[0m
+[0m[[0m[31merror[0m] [0m[0m  private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:86:33: not found: type Promise[0m
+[0m[[0m[31merror[0m] [0m[0m  val receivePromises: Map[Int, Promise[Unit]] = (0 until _workerCount).map { workerId =>[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:87:17: not found: value Promise[0m
+[0m[[0m[31merror[0m] [0m[0m    workerId -> Promise[Unit]()[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:107:31: value workerId is not a member of Any[0m
+[0m[[0m[31merror[0m] [0m[0m        workerId = Some(reply.workerId)[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:108:58: value workerId is not a member of Any[0m
+[0m[[0m[31merror[0m] [0m[0m        logger.info(s"Registered with Worker ID: ${reply.workerId}")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:128:36: value - is not a member of String[0m
+[0m[[0m[31merror[0m] [0m[0m    val interval: Double = (maxKey - minKey).toDouble / sampleCount[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:137:43: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : scala.collection.mutable.ArrayBuffer[String][0m
+[0m[[0m[31merror[0m] [0m[0m required: Seq[String][0m
+[0m[[0m[31merror[0m] [0m[0m    val sampled: Seq[String] = samples.map(_.toString)[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:154:60: value asScala is not a member of java.util.Iterator[java.nio.file.Path][0m
+[0m[[0m[31merror[0m] [0m[0m    val files = Files.list(Paths.get(inputDir)).iterator().asScala.toList.filter(_.toFile.getName.startsWith(s"sample_$workerId"))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:161:19: not found: value WorkerDataRequest[0m
+[0m[[0m[31merror[0m] [0m[0m    val request = WorkerDataRequest(workerId = workerId.getOrElse(0), sample = sampleData)[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:161:67: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Int(0)[0m
+[0m[[0m[31merror[0m] [0m[0m required: Option[Int][0m
+[0m[[0m[31merror[0m] [0m[0m    val request = WorkerDataRequest(workerId = workerId.getOrElse(0), sample = sampleData)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:161:71: not found: value sample[0m
+[0m[[0m[31merror[0m] [0m[0m    val request = WorkerDataRequest(workerId = workerId.getOrElse(0), sample = sampleData)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:166:80: value partitionBoundaries is not a member of Any[0m
+[0m[[0m[31merror[0m] [0m[0m        logger.info(s"Sample data sent. Received partition boundaries: ${reply.partitionBoundaries}")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:177:7: not found: value partitionBoundaries[0m
+[0m[[0m[31merror[0m] [0m[0m      partitionBoundaries.indexWhere(pk => key < pk) match {[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:178:20: not found: value partitionBoundaries[0m
+[0m[[0m[31merror[0m] [0m[0m        case -1 => partitionBoundaries.length.toString // 마지막 노드의 ID로 설정[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:186:27: not found: value id[0m
+[0m[[0m[31merror[0m] [0m[0m        if (targetNode != id) {[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:188:45: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : String[0m
+[0m[[0m[31merror[0m] [0m[0m required: Int[0m
+[0m[[0m[31merror[0m] [0m[0m          sendBuffers = sendBuffers.updated(targetNode, sendBuffers(targetNode) :+ kv)[0m
+[0m[[0m[31merror[0m] [0m[0m                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:188:69: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : String[0m
+[0m[[0m[31merror[0m] [0m[0m required: Int[0m
+[0m[[0m[31merror[0m] [0m[0m          sendBuffers = sendBuffers.updated(targetNode, sendBuffers(targetNode) :+ kv)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:192:60: not found: value id[0m
+[0m[[0m[31merror[0m] [0m[0m      localKeyValue.filter(kv => findTargetNode(kv.key) == id)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:195:19: reassignment to val[0m
+[0m[[0m[31merror[0m] [0m[0m    localKeyValue = partitionKeyValue()[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:207:98: not found: type PartitionDataResponse[0m
+[0m[[0m[31merror[0m] [0m[0m  override def sendPartitionData(request: PartitionDataRequest, responseObserver: StreamObserver[PartitionDataResponse]): Unit = {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:197:25: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Int[0m
+[0m[[0m[31merror[0m] [0m[0m required: message.PartitionDataRequest[0m
+[0m[[0m[31merror[0m] [0m[0m      sendPartitionData(targetNode, dataList) //worker 간 통신[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:200:48: no type parameters for method sequence: (in: CC[scala.concurrent.Future[A]])(implicit bf: scala.collection.BuildFrom[CC[scala.concurrent.Future[A]],A,To], executor: scala.concurrent.ExecutionContext): scala.concurrent.Future[To] exist so that it can be applied to arguments (Iterable[Nothing])[0m
+[0m[[0m[31merror[0m] [0m[0m --- because ---[0m
+[0m[[0m[31merror[0m] [0m[0margument expression's type is not compatible with formal parameter type;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Iterable[Nothing][0m
+[0m[[0m[31merror[0m] [0m[0m required: ?CC[scala.concurrent.Future[?A]][0m
+[0m[[0m[31merror[0m] [0m[0m    val allDataReceived: Future[Unit] = Future.sequence(receivePromises.values.map(_.future)).map(_ => ())[0m
+[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:200:83: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Iterable[Nothing][0m
+[0m[[0m[31merror[0m] [0m[0m required: CC[scala.concurrent.Future[A]][0m
+[0m[[0m[31merror[0m] [0m[0m    val allDataReceived: Future[Unit] = Future.sequence(receivePromises.values.map(_.future)).map(_ => ())[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:201:32: Cannot find an implicit ExecutionContext. You might add[0m
+[0m[[0m[31merror[0m] [0m[0man (implicit ec: ExecutionContext) parameter to your method.[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0mThe ExecutionContext is used to configure how and on which[0m
+[0m[[0m[31merror[0m] [0m[0mthread pools asynchronous tasks (such as Futures) will run,[0m
+[0m[[0m[31merror[0m] [0m[0mso the specific ExecutionContext that is selected is important.[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0mIf your application does not define an ExecutionContext elsewhere,[0m
+[0m[[0m[31merror[0m] [0m[0mconsider using Scala's global ExecutionContext by defining[0m
+[0m[[0m[31merror[0m] [0m[0mthe following:[0m
+[0m[[0m[31merror[0m] [0m[0m[0m
+[0m[[0m[31merror[0m] [0m[0mimplicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global[0m
+[0m[[0m[31merror[0m] [0m[0m    allDataReceived.onComplete { _ =>[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:209:28: value dataList is not a member of message.PartitionDataRequest[0m
+[0m[[0m[31merror[0m] [0m[0m    val dataList = request.dataList.asScala.toList.map(dataMessage => KeyValue(dataMessage.key, dataMessage.value))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:213:20: not found: value PartitionDataResponse[0m
+[0m[[0m[31merror[0m] [0m[0m    val response = PartitionDataResponse(success = true)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:213:42: not found: value success[0m
+[0m[[0m[31merror[0m] [0m[0m    val response = PartitionDataResponse(success = true)[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:245:23: value key is not a member of Char[0m
+[0m[[0m[31merror[0m] [0m[0m    inputDir.sortBy(_.key)[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:245:20: diverging implicit expansion for type scala.math.Ordering[T1][0m
+[0m[[0m[31merror[0m] [0m[0mstarting with method Tuple9 in object Ordering[0m
+[0m[[0m[31merror[0m] [0m[0m    inputDir.sortBy(_.key)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:267:69: value asScala is not a member of java.util.Iterator[java.nio.file.Path][0m
+[0m[[0m[31merror[0m] [0m[0m    val partitionFiles = Files.list(Paths.get(inputDir)).iterator().asScala.toList[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:270:67: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Option[Int][0m
+[0m[[0m[31merror[0m] [0m[0m required: Int[0m
+[0m[[0m[31merror[0m] [0m[0m    var buffers: Map[Int, Seq[KeyValue]] = receiveBuffers.updated(workerId, localKeyValue)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:273:70: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : scala.collection.MapView[Int,Iterator[machine.KeyValue]][0m
+[0m[[0m[31merror[0m] [0m[0m required: Map[Int,Iterator[machine.KeyValue]][0m
+[0m[[0m[31merror[0m] [0m[0m      val iterators: Map[Int, Iterator[KeyValue]] = buffers.mapValues(_.iterator)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:276:26: not found: type PriorityQueue[0m
+[0m[[0m[31merror[0m] [0m[0m      val priorityQueue: PriorityQueue[(KeyValue, Int)] = PriorityQueue.empty(kvOrdering.reverse)[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:276:59: not found: value PriorityQueue[0m
+[0m[[0m[31merror[0m] [0m[0m      val priorityQueue: PriorityQueue[(KeyValue, Int)] = PriorityQueue.empty(kvOrdering.reverse)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:284:20: not found: value mutable[0m
+[0m[[0m[31merror[0m] [0m[0m      val result = mutable.Buffer[KeyValue]()[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:291:30: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Any[0m
+[0m[[0m[31merror[0m] [0m[0m required: Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val iter = iterators(id)[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m48 errors found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 1 s, completed 2024. 12. 8. 오후 11:38:25[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
