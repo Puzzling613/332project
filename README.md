@@ -1,5 +1,5 @@
 # CSED332 Distributed Sorting Project
-Team Black: [조민석](github.com/Puzzling613), [백지은](github.com/hsprt218), [홍지우](github.com/jiwooh)  
+Team Black: [조민석](https://github.com/Puzzling613), [백지은](https://github.com/hsprt218), [홍지우](https://github.com/jiwooh)  
 Status: WIP
 
 # Instructions
@@ -12,6 +12,7 @@ tar -xvf gensort-linux-1.5.tar.gz
 ```
 ## Build
 ```
+cd DistributedSorting
 sbt compile
 ```
 ## Run
