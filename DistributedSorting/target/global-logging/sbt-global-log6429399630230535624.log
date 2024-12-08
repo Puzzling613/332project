@@ -1,3 +1,7 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile, Some(b9097f0b-d790-4fd6-8eef-ee565c21f14f), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / compile[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 22 Scala sources to C:\D\Univ\sd\332project\DistributedSorting\target\scala-2.13\classes ...[0m
 [0m[[0m[31merror[0m] [0m[0mC:\D\Univ\sd\332project\DistributedSorting\src\main\scala\machine\Worker.scala:40:27: not found: type MasterBlockingStub[0m
 [0m[[0m[31merror[0m] [0m[0m  private val masterStub: MasterBlockingStub = MasterServiceGrpc.blockingStub(channel)[0m
 [0m[[0m[31merror[0m] [0m[0m                          ^[0m
@@ -172,3 +176,6 @@
 [0m[[0m[31merror[0m] [0m[0m    channel.shutdown()[0m
 [0m[[0m[31merror[0m] [0m[0m    ^[0m
 [0m[[0m[31merror[0m] [0m[0m46 errors found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 1 s, completed 2024. 12. 8. 오후 11:51:20[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

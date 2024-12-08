@@ -6,8 +6,6 @@ import scala.collection.mutable.ArrayBuffer
 import io.grpc.stub.StreamObserver
 import scala.concurrent.{Future, ExecutionContext}
 import java.nio.file.{Files, Paths}
-import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 import message._
@@ -31,13 +29,13 @@ object WorkerApp extends App with LazyLogging {
   logger.info(s"Starting Worker with Master at $masterAddress")
   logger.info(s"Input Directory: $inputDir, Output Directory: $outputDir")
 
-  val worker = new WorkerService(masterAddress, workerIp, inputDir, outputDir)
+  val worker = new WorkerServer(masterAddress, workerIp, inputDir, outputDir)
   worker.start()
 }
 
 class WorkerService(masterAddress: String, workerIp: String, inputDir: String, outputDir: String) extends LazyLogging with Hyperparams {
   private val channel: ManagedChannel = ManagedChannelBuilder.forTarget(masterAddress).usePlaintext().build()
-  private val masterStub: MasterGrpc.MasterBlockingStub = MasterGrpc.blockingStub(channel)
+  private val masterStub: MasterBlockingStub = MasterServiceGrpc.blockingStub(channel)
 
   private var workerId: Option[Int] = None
   private var sendBuffers: Map[Int, Seq[KeyValue]] = Map()
