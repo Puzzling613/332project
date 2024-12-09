@@ -18,7 +18,7 @@ sbt compile
 ## Run
 ```
 sbt runMain machine.MasterApp
-sbt runMain machine.Worker [MASTER_IP]:50051 -I [ABSOLUTE_PATH_OF_INPUT_DIRECTORIES] -O [ABSOLUTE_PATH_OF_OUTPUT_DIRECTORY]
+sbt runMain machine.Worker [MASTER_IP]:7777 -I [ABSOLUTE_PATH_OF_INPUT_DIRECTORIES] -O [ABSOLUTE_PATH_OF_OUTPUT_DIRECTORY]
 ```
 ## Test
 ```
